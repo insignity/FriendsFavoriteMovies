@@ -15,12 +15,19 @@ struct FriendList: View {
     
     var body: some View {
         NavigationSplitView {
-            List {
-                ForEach(friends) { friend in
-                    NavigationLink(friend.name){
-                        FriendDetail(friend: friend)
+            //Can't do .navigationTitle with if condition, so there comes Group
+            Group {
+                if !friends.isEmpty {
+                    List {
+                        ForEach(friends) { friend in
+                            NavigationLink(friend.name){
+                                FriendDetail(friend: friend)
+                            }
+                        }.onDelete(perform: deleteFriends(indexes: ))
                     }
-                }.onDelete(perform: deleteFriends(indexes: ))
+                } else {
+                    ContentUnavailableView("Add friends", systemImage: "person.and.person")
+                }
             }
             .navigationTitle("Friends")
             .toolbar {
@@ -60,4 +67,8 @@ struct FriendList: View {
 
 #Preview {
     FriendList().modelContainer(SampleData.shared.modelContainer)
+}
+
+#Preview("Empty") {
+    FriendList().modelContainer(for: Friend.self, inMemory: true)
 }

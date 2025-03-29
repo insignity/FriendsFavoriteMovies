@@ -19,11 +19,27 @@ struct MovieDetail: View {
         self.isNew = isNew
     }
     
+    var sortedFriends: [Friend] {
+        //ccompares the first object to the name object in an array to sort all objects
+        movie.favoritedBy.sorted { first, second in
+            first.name < second.name
+        }
+    }
+    
     var body: some View {
         Form {
             TextField("Movie Title", text: $movie.title)
             
             DatePicker("Release date", selection: $movie.releaseDate, displayedComponents: .date)
+            
+            if !movie.favoritedBy.isEmpty {
+                Section("Favorited by") {
+                    ForEach(sortedFriends) {
+                        friend in
+                        Text(friend.name)
+                    }
+                }
+            }
         }
         .navigationTitle(isNew ? "New Movie" : "Movie")
         .navigationBarTitleDisplayMode(.inline)
